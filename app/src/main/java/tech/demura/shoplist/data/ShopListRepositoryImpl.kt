@@ -1,11 +1,14 @@
 package tech.demura.shoplist.data
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import tech.demura.shoplist.domain.ShopItem
 import tech.demura.shoplist.domain.ShopListRepository
 import java.lang.RuntimeException
 
 object ShopListRepositoryImpl: ShopListRepository {
 
+    private var shopListLD = MutableLiveData<List<ShopItem>>()
     private var shopList = mutableListOf<ShopItem>()
     private var autoIncrement = 0
 
@@ -14,6 +17,7 @@ object ShopListRepositoryImpl: ShopListRepository {
             val item = ShopItem("$i", i, true)
             addShopItem(item)
         }
+        updateLD()
     }
 
     override fun addShopItem(shopItem: ShopItem) {
@@ -21,10 +25,12 @@ object ShopListRepositoryImpl: ShopListRepository {
             shopItem.id = autoIncrement++
         }
         shopList.add(shopItem)
+        updateLD()
     }
 
     override fun deleteShopItem(shopItem: ShopItem) {
         shopList.remove(shopItem)
+        updateLD()
     }
 
     override fun editShopItem(shopItem: ShopItem) {
@@ -39,7 +45,11 @@ object ShopListRepositoryImpl: ShopListRepository {
         } ?: throw RuntimeException("Shop Item with $shopItemId id not founded")
     }
 
-    override fun getShopList(): List<ShopItem> {
-        return shopList.toList()
+    override fun getShopList(): LiveData<List<ShopItem>> {
+        return shopListLD
+    }
+
+    private fun updateLD(){
+        shopListLD.value = shopList.toList()
     }
 }
