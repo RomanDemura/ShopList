@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import tech.demura.shoplist.domain.ShopItem
 import tech.demura.shoplist.domain.ShopListRepository
 import java.lang.RuntimeException
+import kotlin.random.Random
 
 object ShopListRepositoryImpl: ShopListRepository {
 
@@ -13,8 +14,8 @@ object ShopListRepositoryImpl: ShopListRepository {
     private var autoIncrement = 0
 
     init {
-        for (i in 0 until 50){
-            val item = ShopItem("$i", i, true)
+        for (i in 0 until 1000){
+            val item = ShopItem("$i", i, Random.nextBoolean())
             addShopItem(item)
         }
         updateLD()

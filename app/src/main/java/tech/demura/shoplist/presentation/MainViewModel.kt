@@ -1,5 +1,6 @@
 package tech.demura.shoplist.presentation
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import tech.demura.shoplist.data.ShopListRepositoryImpl
 import tech.demura.shoplist.domain.DeleteShopItemUseCase
@@ -24,5 +25,9 @@ class MainViewModel : ViewModel() {
     fun changeEnableState(shopItem: ShopItem) {
         val newShopItem = shopItem.copy(enabled = !shopItem.enabled)
         editShopItemUseCase.editShopItem(newShopItem)
+    }
+
+    fun shopItemInfo(shopItem: ShopItem) {
+        Log.d("ShopItemInfo", shopItem.toString())
     }
 }
