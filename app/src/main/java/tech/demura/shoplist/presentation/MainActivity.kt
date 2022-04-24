@@ -1,13 +1,16 @@
 package tech.demura.shoplist.presentation
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import tech.demura.shoplist.R
 import tech.demura.shoplist.domain.ShopItem
 
@@ -22,6 +25,12 @@ class MainActivity : AppCompatActivity() {
         viewModel = ViewModelProvider(this)[MainViewModel::class.java]
         viewModel.shopList.observe(this) {
             shopListAdapter.submitList(it)
+        }
+        val buttonAddShopItem = findViewById<FloatingActionButton>(R.id.button_add_shop_item)
+        buttonAddShopItem.setOnClickListener{
+            val intent = Intent(this, ShopItemActivity::class.java)
+            intent.putExtra("extra_mode", "mode_add")
+            startActivity(intent)
         }
     }
 
@@ -45,7 +54,11 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupClickListener() {
-        shopListAdapter.onClickListener = { viewModel.shopItemInfo(it) }
+        shopListAdapter.onClickListener = {
+            val intent = Intent(this, ShopItemActivity::class.java)
+            intent.putExtra("extra_mode", "mode_edit")
+            startActivity(intent)
+        }
     }
 
     private fun setupLongClickListener() {
