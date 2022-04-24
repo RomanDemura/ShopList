@@ -135,7 +135,7 @@ class ShopItemActivity : AppCompatActivity() {
                 throw RuntimeException("Param shop item id is absent")
             }
             shopItemId = intent.getIntExtra(EXTRA_SHOP_ITEM_ID, ShopItem.UNDEFINED_ID)
-            if (shopItemId <= 0){
+            if (shopItemId < 0){
                 throw RuntimeException("Wrong shop item id")
             }
         }
