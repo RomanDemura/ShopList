@@ -28,8 +28,7 @@ class MainActivity : AppCompatActivity() {
         }
         val buttonAddShopItem = findViewById<FloatingActionButton>(R.id.button_add_shop_item)
         buttonAddShopItem.setOnClickListener{
-            val intent = Intent(this, ShopItemActivity::class.java)
-            intent.putExtra("extra_mode", "mode_add")
+            val intent = ShopItemActivity.newIntentAddShopItem(this)
             startActivity(intent)
         }
     }
@@ -55,8 +54,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupClickListener() {
         shopListAdapter.onClickListener = {
-            val intent = Intent(this, ShopItemActivity::class.java)
-            intent.putExtra("extra_mode", "mode_edit")
+            val intent = ShopItemActivity.newIntentEditShopItem(this, it.id)
             startActivity(intent)
         }
     }
