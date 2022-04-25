@@ -16,8 +16,32 @@ import com.google.android.material.textfield.TextInputLayout
 import tech.demura.shoplist.R
 import tech.demura.shoplist.domain.ShopItem
 
-class ShopItemFragment (var screenMode: String = MODE_UNKNOWN,
-var shopItemId: Int = ShopItem.UNDEFINED_ID): Fragment() {
+class ShopItemFragment (): Fragment() {
+
+    companion object{
+        private const val SCREEN_MODE = "screen_mode"
+        private const val SHOP_ITEM_ID = "extra_shop_item_id"
+        private const val MODE_ADD = "mode_add"
+        private const val MODE_EDIT = "mode_edit"
+        private const val MODE_UNKNOWN = ""
+
+        fun newInstanceAddItem(): ShopItemFragment{
+            return ShopItemFragment().apply {
+                arguments = Bundle().apply {
+                    putString(SCREEN_MODE, MODE_ADD)
+                }
+            }
+        }
+
+        fun newInstanceEditItem(shopItemId: Int): ShopItemFragment{
+            return ShopItemFragment().apply {
+                arguments = Bundle().apply {
+                    putString(SCREEN_MODE, MODE_EDIT)
+                    putInt(SHOP_ITEM_ID, shopItemId)
+                }
+            }
+        }
+    }
 
     private lateinit var viewModel: ShopItemViewModel
 
@@ -27,7 +51,13 @@ var shopItemId: Int = ShopItem.UNDEFINED_ID): Fragment() {
     private lateinit var etCount: EditText
     private lateinit var buttonSave: Button
 
+    var screenMode: String = MODE_UNKNOWN
+    var shopItemId: Int = ShopItem.UNDEFINED_ID
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        parseParams()
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -39,28 +69,30 @@ var shopItemId: Int = ShopItem.UNDEFINED_ID): Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        parseParams()
         viewModel = ViewModelProvider(this)[ShopItemViewModel::class.java]
         initViews(view)
         addChangeTextListener()
-        //launchRightMode()
         observeViewModel(view)
 
     }
 
     fun parseParams(){
-        if (screenMode == MODE_UNKNOWN){
+        val args = requireArguments()
+        if (!args.containsKey(SCREEN_MODE)){
             throw RuntimeException("Param screen mode is absent.")
         }
-        if (screenMode != MODE_ADD && screenMode != MODE_EDIT){
-            throw RuntimeException("Unknown screen mode: $screenMode")
+        val mode = args.getString(SCREEN_MODE)
+        if (mode != MODE_ADD && mode != MODE_EDIT){
+            throw RuntimeException("Unknown screen mode: $mode")
         }
+        screenMode = mode
         if (screenMode == MODE_EDIT){
-            if (shopItemId == ShopItem.UNDEFINED_ID){
+            if (!args.containsKey(SHOP_ITEM_ID)){
                 throw RuntimeException("Param shop item id is absent")
             }
-            if (shopItemId < 0){
-                throw RuntimeException("Wrong shop item id")
+            shopItemId = args.getInt(SHOP_ITEM_ID, ShopItem.UNDEFINED_ID)
+            if (shopItemId < 0) {
+                throw RuntimeException("Wrong shop item id: $shopItemId")
             }
         }
     }
@@ -97,32 +129,6 @@ var shopItemId: Int = ShopItem.UNDEFINED_ID): Fragment() {
         }
     }
 
-//    private fun launchRightMode(){
-//        val fragment = when (screenMode){
-//            EXTRA_ADD_MODE -> launchAddMode()
-//            EXTRA_EDIT_MODE -> launchEditMode()
-//            else -> throw java.lang.RuntimeException("Unknown screen mode: $screenMode")
-//        }
-//
-//    }
-//
-//    private fun launchAddMode(){
-//        buttonSave.setOnClickListener{
-//            viewModel.addShopItem(etName.text?.toString(), etCount.text?.toString())
-//        }
-//    }
-//
-//    private fun launchEditMode(){
-//        viewModel.getShopItem(shopItemId)
-//        viewModel.shopItem.observe(this){
-//            etName.setText(it.name)
-//            etCount.setText(it.count.toString())
-//        }
-//        buttonSave.setOnClickListener{
-//            viewModel.editShopItem(etName.text?.toString(), etCount.text?.toString())
-//        }
-//    }
-
     private fun addChangeTextListener(){
         etName.addTextChangedListener( object: TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
@@ -149,21 +155,4 @@ var shopItemId: Int = ShopItem.UNDEFINED_ID): Fragment() {
         })
     }
 
-
-
-    companion object{
-        private const val EXTRA_SCREEN_MODE = "extra_mode"
-        private const val EXTRA_SHOP_ITEM_ID = "extra_shop_item_id"
-        private const val MODE_ADD = "mode_add"
-        private const val MODE_EDIT = "mode_edit"
-        private const val MODE_UNKNOWN = ""
-
-        fun newInstanceAddItem(): ShopItemFragment{
-            return ShopItemFragment(MODE_ADD)
-        }
-
-        fun newInstanceEditItem(shopItemId: Int): ShopItemFragment{
-            return ShopItemFragment(MODE_EDIT, shopItemId)
-        }
-    }
 }
