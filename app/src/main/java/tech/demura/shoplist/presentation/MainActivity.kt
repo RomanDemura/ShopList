@@ -18,7 +18,7 @@ import tech.demura.shoplist.R
 import tech.demura.shoplist.domain.ShopItem
 
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), OnEditingFinished {
 
     private lateinit var viewModel: MainViewModel
     private lateinit var shopListAdapter: ShopListAdapter
@@ -120,5 +120,9 @@ class MainActivity : AppCompatActivity() {
         }
         val itemTouchHelper = ItemTouchHelper(callback)
         itemTouchHelper.attachToRecyclerView(rvShopList)
+    }
+
+    override fun onEditingFinished() {
+        supportFragmentManager.popBackStack()
     }
 }

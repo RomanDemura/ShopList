@@ -8,7 +8,7 @@ import androidx.fragment.app.FragmentTransaction
 import tech.demura.shoplist.R
 import tech.demura.shoplist.domain.ShopItem
 
-class ShopItemActivity : AppCompatActivity() {
+class ShopItemActivity : AppCompatActivity(), OnEditingFinished {
 
     var screenMode = MODE_UNKNOWN
     var shopItemId = ShopItem.UNDEFINED_ID
@@ -75,5 +75,9 @@ class ShopItemActivity : AppCompatActivity() {
             intent.putExtra(EXTRA_SHOP_ITEM_ID, shopItemId)
             return intent
         }
+    }
+
+    override fun onEditingFinished() {
+        finish()
     }
 }

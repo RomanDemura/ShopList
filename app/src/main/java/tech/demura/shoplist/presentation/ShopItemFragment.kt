@@ -1,5 +1,6 @@
 package tech.demura.shoplist.presentation
 
+import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -50,6 +51,7 @@ class ShopItemFragment (): Fragment() {
     private lateinit var etName: EditText
     private lateinit var etCount: EditText
     private lateinit var buttonSave: Button
+    private lateinit var onEditingFinished: OnEditingFinished
 
     var screenMode: String = MODE_UNKNOWN
     var shopItemId: Int = ShopItem.UNDEFINED_ID
@@ -79,7 +81,15 @@ class ShopItemFragment (): Fragment() {
                 MODE_EDIT -> viewModel.editShopItem(etName.text.toString(), etCount.text.toString())
             }
         }
+    }
 
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        if (context is OnEditingFinished){
+            onEditingFinished = context
+        } else {
+            throw java.lang.RuntimeException("Context must implement OnEditingFinished interface")
+        }
     }
 
     fun parseParams(){
@@ -132,7 +142,7 @@ class ShopItemFragment (): Fragment() {
         }
 
         viewModel.shouldCloseScreen.observe(viewLifecycleOwner){
-            activity?.onBackPressed()
+            onEditingFinished.onEditingFinished()
         }
 
         viewModel.shopItem.observe(viewLifecycleOwner){
