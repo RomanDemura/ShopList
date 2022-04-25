@@ -56,6 +56,7 @@ class ShopItemFragment (): Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        viewModel = ViewModelProvider(this)[ShopItemViewModel::class.java]
         parseParams()
     }
 
@@ -69,10 +70,15 @@ class ShopItemFragment (): Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel = ViewModelProvider(this)[ShopItemViewModel::class.java]
         initViews(view)
         addChangeTextListener()
         observeViewModel(view)
+        buttonSave.setOnClickListener{
+            when (screenMode) {
+                MODE_ADD -> viewModel.addShopItem(etName.text.toString(), etCount.text.toString())
+                MODE_EDIT -> viewModel.editShopItem(etName.text.toString(), etCount.text.toString())
+            }
+        }
 
     }
 
@@ -94,6 +100,7 @@ class ShopItemFragment (): Fragment() {
             if (shopItemId < 0) {
                 throw RuntimeException("Wrong shop item id: $shopItemId")
             }
+            viewModel.getShopItem(shopItemId)
         }
     }
 
@@ -126,6 +133,11 @@ class ShopItemFragment (): Fragment() {
 
         viewModel.shouldCloseScreen.observe(viewLifecycleOwner){
             activity?.onBackPressed()
+        }
+
+        viewModel.shopItem.observe(viewLifecycleOwner){
+            etName.setText(it.name)
+            etCount.setText(it.count.toString())
         }
     }
 
