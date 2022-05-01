@@ -13,11 +13,11 @@ import tech.demura.shoplist.domain.ShopItem
 class ShopItemViewModel : ViewModel() {
     val repository = ShopListRepositoryImpl
 
-    private var _errorInputName = MutableLiveData<Boolean>(false)
+    private var _errorInputName = MutableLiveData<Boolean>()
     val errorInputName: LiveData<Boolean>
         get() = _errorInputName
 
-    private val _errorInputCount = MutableLiveData<Boolean>(false)
+    private val _errorInputCount = MutableLiveData<Boolean>()
     val errorInputCount: LiveData<Boolean>
         get() = _errorInputCount
 
@@ -96,7 +96,7 @@ class ShopItemViewModel : ViewModel() {
         _errorInputCount.value = false
     }
 
-    private fun finishWork(){
+    private fun finishWork() {
         _shouldCloseScreen.value = Unit
     }
 }
