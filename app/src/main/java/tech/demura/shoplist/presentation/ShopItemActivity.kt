@@ -6,16 +6,20 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentTransaction
 import tech.demura.shoplist.R
+import tech.demura.shoplist.databinding.ActivityShopItemBinding
 import tech.demura.shoplist.domain.ShopItem
 
 class ShopItemActivity : AppCompatActivity(), OnEditingFinished {
+
+    private lateinit var binding: ActivityShopItemBinding
 
     var screenMode = MODE_UNKNOWN
     var shopItemId = ShopItem.UNDEFINED_ID
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_shop_item)
+        binding = ActivityShopItemBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         parseIntent()
 
         if (savedInstanceState == null){
@@ -31,7 +35,7 @@ class ShopItemActivity : AppCompatActivity(), OnEditingFinished {
             else -> throw RuntimeException("Unknown screen mode: $screenMode")
         }
     supportFragmentManager.beginTransaction()
-        .replace(R.id.shop_item_container, fragment)
+        .replace(binding.shopItemContainer.id, fragment)
         .commit()
     }
 

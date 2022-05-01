@@ -15,22 +15,26 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import tech.demura.shoplist.R
+import tech.demura.shoplist.databinding.ActivityMainBinding
 import tech.demura.shoplist.domain.ShopItem
 
 
 class MainActivity : AppCompatActivity(), OnEditingFinished {
 
+    private lateinit var binding: ActivityMainBinding
+
     private lateinit var viewModel: MainViewModel
     private lateinit var shopListAdapter: ShopListAdapter
-    private lateinit var buttonAddShopItem: FloatingActionButton
-    private var shopItemContainer: FragmentContainerView? = null
+//    private lateinit var buttonAddShopItem: FloatingActionButton
+//    private var shopItemContainer: FragmentContainerView? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        shopItemContainer = findViewById(R.id.shop_item_main_container)
-        buttonAddShopItem = findViewById(R.id.button_add_shop_item)
+//        shopItemContainer = findViewById(R.id.shop_item_main_container)
+//        buttonAddShopItem = findViewById(R.id.button_add_shop_item)
 
         viewModel = ViewModelProvider(this)[MainViewModel::class.java]
         viewModel.shopList.observe(this) {
@@ -40,12 +44,12 @@ class MainActivity : AppCompatActivity(), OnEditingFinished {
         setupRecyclerView()
 
         if (isOnePaneMode()) {
-            buttonAddShopItem.setOnClickListener {
+            binding.buttonAddShopItem.setOnClickListener {
                 val intent = ShopItemActivity.newIntentAddShopItem(this)
                 startActivity(intent)
             }
         } else {
-            buttonAddShopItem.setOnClickListener {
+            binding.buttonAddShopItem.setOnClickListener {
                 val fragment = ShopItemFragment.newInstanceAddItem()
                 launchFragment(fragment)
             }
@@ -53,7 +57,7 @@ class MainActivity : AppCompatActivity(), OnEditingFinished {
     }
 
     private fun isOnePaneMode(): Boolean {
-        return shopItemContainer == null
+        return binding.shopItemMainContainer == null
     }
 
     private fun launchFragment(fragment: Fragment){
