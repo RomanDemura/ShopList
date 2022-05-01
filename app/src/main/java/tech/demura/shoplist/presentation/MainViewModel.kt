@@ -1,6 +1,5 @@
 package tech.demura.shoplist.presentation
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import tech.demura.shoplist.data.ShopListRepositoryImpl
 import tech.demura.shoplist.domain.DeleteShopItemUseCase

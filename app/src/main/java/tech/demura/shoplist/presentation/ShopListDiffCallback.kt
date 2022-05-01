@@ -3,7 +3,8 @@ package tech.demura.shoplist.presentation
 import androidx.recyclerview.widget.DiffUtil
 import tech.demura.shoplist.domain.ShopItem
 
-class ShopListDiffCallback (val oldList: List<ShopItem>, val newList: List<ShopItem>): DiffUtil.Callback() {
+class ShopListDiffCallback(val oldList: List<ShopItem>, val newList: List<ShopItem>) :
+    DiffUtil.Callback() {
 
     override fun getOldListSize(): Int {
         return oldList.size
